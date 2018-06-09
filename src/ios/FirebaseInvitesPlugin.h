@@ -1,10 +1,9 @@
 #import <Cordova/CDV.h>
 @import Firebase;
+@import GoogleSignIn;
 
-@interface FirebaseInvitePlugin : CDVPlugin<FIRInviteDelegate>
+@interface FirebaseInvitePlugin : CDVPlugin<FIRInviteDelegate, GIDSignInDelegate, GIDSignInUIDelegate>
 
 - (void)invite:(CDVInvokedUrlCommand*)command;
-
-@property (nonatomic, copy) NSString *inviteCallbackId;
 
 @end

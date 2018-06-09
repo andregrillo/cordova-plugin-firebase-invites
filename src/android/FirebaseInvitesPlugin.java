@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.text.TextUtils;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
 
@@ -12,6 +13,8 @@ import by.chemerisuk.cordova.support.ReflectiveCordovaPlugin;
 import by.chemerisuk.cordova.support.ReflectiveCordovaPlugin.ExecutionThread;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
@@ -30,9 +33,17 @@ public class FirebaseInvitePlugin extends ReflectiveCordovaPlugin {
 
     @Override
     protected void pluginInitialize() {
-        Log.d(TAG, "Starting Invite plugin");
+        Log.d(TAG, "Starting Firebase Invites plugin");
 
         iosClientId = preferences.getString("REVERSED_CLIENT_ID", "").trim();
+
+        // REVERSED_CLIENT_ID -> CLIENT_ID for iOS
+
+        if (!iosClientId.isEmpty()) {
+            List<String> parts = Arrays.asList(iosClientId.split("\\."));
+            Collections.reverse(parts);
+            iosClientId = TextUtils.join(".", parts);
+        }
     }
 
     @CordovaMethod(ExecutionThread.WORKER)
@@ -43,7 +54,7 @@ public class FirebaseInvitePlugin extends ReflectiveCordovaPlugin {
         String message = config.getString("message");
         AppInviteInvitation.IntentBuilder builder = new AppInviteInvitation.IntentBuilder(title)
             .setMessage(message)
-            .setDeepLink(Uri.parse(config.getString("link")));
+            .setDeepLink(Uri.parse(config.getString("deepLink")));
         if (config.has("emailAction")) {
             builder.setCallToActionText(config.getString("emailAction"));
         }
