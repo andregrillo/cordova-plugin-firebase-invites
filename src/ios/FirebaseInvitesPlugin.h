@@ -2,7 +2,7 @@
 @import Firebase;
 @import GoogleSignIn;
 
-@interface FirebaseInvitePlugin : CDVPlugin<FIRInviteDelegate, GIDSignInDelegate, GIDSignInUIDelegate>
+@interface FirebaseInvitesPlugin : CDVPlugin<FIRInviteDelegate, GIDSignInDelegate, GIDSignInUIDelegate>
 
 - (void)invite:(CDVInvokedUrlCommand*)command;
 

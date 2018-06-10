@@ -10,7 +10,6 @@ import com.google.android.gms.appinvite.AppInviteInvitation;
 
 import by.chemerisuk.cordova.support.CordovaMethod;
 import by.chemerisuk.cordova.support.ReflectiveCordovaPlugin;
-import by.chemerisuk.cordova.support.ReflectiveCordovaPlugin.ExecutionThread;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,12 +23,12 @@ import org.json.JSONObject;
 import static com.google.android.gms.appinvite.AppInviteInvitation.IntentBuilder.PlatformMode.PROJECT_PLATFORM_IOS;
 
 
-public class FirebaseInvitePlugin extends ReflectiveCordovaPlugin {
+public class FirebaseInvitesPlugin extends ReflectiveCordovaPlugin {
     private static final String TAG = "FirebaseInvitePlugin";
     private static final int REQUEST_INVITE = 4343248;
 
     private String iosClientId;
-    private CallbackContext invitateCallbackContext;
+    private CallbackContext inviteCallbackContext;
 
     @Override
     protected void pluginInitialize() {
@@ -46,13 +45,14 @@ public class FirebaseInvitePlugin extends ReflectiveCordovaPlugin {
         }
     }
 
-    @CordovaMethod(ExecutionThread.WORKER)
+    @CordovaMethod
     protected void invite(JSONObject config, CallbackContext callbackContext) throws JSONException {
-        this.invitateCallbackContext = callbackContext;
+        this.inviteCallbackContext = callbackContext;
 
         String title = config.getString("title");
         String message = config.getString("message");
-        AppInviteInvitation.IntentBuilder builder = new AppInviteInvitation.IntentBuilder(title)
+        AppInviteInvitation.IntentBuilder builder = new AppInviteInvitation
+            .IntentBuilder(title)
             .setMessage(message)
             .setDeepLink(Uri.parse(config.getString("deepLink")));
         if (config.has("emailAction")) {
@@ -81,7 +81,7 @@ public class FirebaseInvitePlugin extends ReflectiveCordovaPlugin {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        if (this.invitateCallbackContext != null && requestCode == REQUEST_INVITE) {
+        if (this.inviteCallbackContext != null && requestCode == REQUEST_INVITE) {
             JSONArray invitationIds = new JSONArray();
             if (resultCode == Activity.RESULT_OK) {
                 String[] ids = AppInviteInvitation.getInvitationIds(resultCode, intent);
@@ -89,7 +89,7 @@ public class FirebaseInvitePlugin extends ReflectiveCordovaPlugin {
                     invitationIds.put(id);
                 }
             }
-            this.invitateCallbackContext.success(invitationIds);
+            this.inviteCallbackContext.success(invitationIds);
         }
     }
 }

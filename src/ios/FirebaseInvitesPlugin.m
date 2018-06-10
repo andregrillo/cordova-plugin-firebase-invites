@@ -1,6 +1,6 @@
-#import "FirebaseInvitePlugin.h"
+#import "FirebaseInvitesPlugin.h"
 
-@implementation FirebaseInvitePlugin {
+@implementation FirebaseInvitesPlugin {
     NSString *_inviteCallbackId;
     id <FIRInviteBuilder> _inviteDialog;
 }
@@ -13,6 +13,7 @@
     }
 
     [GIDSignIn sharedInstance].clientID = [FIRApp defaultApp].options.clientID;
+    [GIDSignIn sharedInstance].uiDelegate = self;
     [GIDSignIn sharedInstance].delegate = self;
 }
 
@@ -83,7 +84,7 @@
     if (error == nil) {
         [_inviteDialog open];
     } else {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.localizedDescription];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:_inviteCallbackId];
     }
 }

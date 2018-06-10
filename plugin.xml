@@ -1,14 +1,18 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="cordova-plugin-firebase-invites"
-      version="0.1.0">
+      version="0.14.0">
 
-    <name>cordova-plugin-firebase-invites</name>
+    <name>FirebaseInvitesPlugin</name>
     <description>Cordova plugin for Firebase Invites</description>
     <license>MIT</license>
     <keywords>cordova</keywords>
     <repo>https://github.com/chemerisuk/cordova-plugin-firebase-invites</repo>
     <issue>https://github.com/chemerisuk/cordova-plugin-firebase-invites/issues</issue>
+
+    <js-module src="www/FirebaseInvites.js" name="FirebaseInvites">
+        <merges target="cordova.plugins.firebase.invites" />
+    </js-module>
 
     <engines>
         <engine name="cordova" version=">=6.0.0"/>
@@ -16,11 +20,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <engine name="cordova-ios" version=">=4.4.0"/>
     </engines>
 
-    <js-module src="www/FirebaseInvites.js" name="FirebaseInvites">
-        <clobbers target="cordova.plugins.firebase.invite" />
-    </js-module>
-
-    <preference name="REVERSED_CLIENT_ID"/>
+    <preference name="REVERSED_CLIENT_ID" default=" "/>
 
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
@@ -47,24 +47,23 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <header-file src="src/ios/FirebaseInvitesPlugin.h" />
         <source-file src="src/ios/FirebaseInvitesPlugin.m" />
 
-        <framework src="GoogleSignIn" type="podspec" spec="~> 5.0"/>
+        <framework src="GoogleSignIn" type="podspec" spec="~> 4.1"/>
         <framework src="Firebase/Core" type="podspec" spec="~> 5.0"/>
         <framework src="Firebase/Invites" type="podspec" spec="~> 5.0"/>
     </platform>
 
     <platform name="android">
         <preference name="FIREBASE_INVITES_VERSION" default="16.0.+"/>
+        <preference name="REVERSED_CLIENT_ID" value="$REVERSED_CLIENT_ID" />
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="FirebaseInvites">
                 <param name="android-package" value="by.chemerisuk.cordova.firebase.FirebaseInvitesPlugin" />
             </feature>
-
-            <preference name="REVERSED_CLIENT_ID" value="$REVERSED_CLIENT_ID" />
         </config-file>
 
-        <dependency id="cordova-support-android-plugin" version="~0.4.0"/>
-        <dependency id="cordova-support-google-services" version="~1.2.0"/>
+        <dependency id="cordova-support-android-plugin" version="~0.3.0"/>
+        <dependency id="cordova-support-google-services" version="~1.1.0"/>
 
         <framework src="com.google.firebase:firebase-invites:$FIREBASE_INVITES_VERSION" />
 
