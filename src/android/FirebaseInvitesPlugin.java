@@ -49,29 +49,30 @@ public class FirebaseInvitesPlugin extends ReflectiveCordovaPlugin {
     protected void invite(JSONObject config, CallbackContext callbackContext) throws JSONException {
         this.inviteCallbackContext = callbackContext;
 
-        String title = config.getString("title");
-        String message = config.getString("message");
         AppInviteInvitation.IntentBuilder builder = new AppInviteInvitation
-            .IntentBuilder(title)
-            .setMessage(message)
+            .IntentBuilder(config.getString("title"))
+            .setMessage(config.getString("message"))
             .setDeepLink(Uri.parse(config.getString("deepLink")));
-        if (config.has("emailAction")) {
-            builder.setCallToActionText(config.getString("emailAction"));
-        }
-        if (config.has("emailImage")) {
-            builder.setCustomImage(Uri.parse(config.getString("emailImage")));
-        }
-        if (config.has("emailSubject")) {
-            builder.setEmailSubject(config.getString("emailSubject"));
-        }
+
         if (config.has("emailContent")) {
             builder.setEmailHtmlContent(config.getString("emailContent"));
+            // emailSubject is required when emailContent exists
+            builder.setEmailSubject(config.getString("emailSubject"));
+        } else {
+            // emailImage, emailAction are ignored when emailContent exists
+            if (config.has("emailImage")) {
+                builder.setCustomImage(Uri.parse(config.getString("emailImage")));
+            }
+            if (config.has("emailAction")) {
+                builder.setCallToActionText(config.getString("emailAction"));
+            }
+        }
+
+        if (config.has("androidMinimumVersion")) {
+            builder.setAndroidMinimumVersionCode(config.getInt("androidMinimumVersion"));
         }
         if (!iosClientId.isEmpty()) {
             builder.setOtherPlatformsTargetApplication(PROJECT_PLATFORM_IOS, iosClientId);
-        }
-        if (config.has("androidMinimumVersion")) {
-            builder.setAndroidMinimumVersionCode(config.getInt("androidMinimumVersion"));
         }
 
         cordova.startActivityForResult(this, builder.build(), REQUEST_INVITE);
